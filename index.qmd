@@ -28,16 +28,20 @@ bibliography: references.bib
 echo: true
 ---
 
+
 ## Introduction
 
 Researcher: Isha Hebbar\
 Question: Should the sleep study recruitment website be built with Django or Flask?
 
-Right now, interested students email the lab and a grad student manually sends back eligibility questions. That takes hours each week and people drop out along the way. The site needs to describe the study, run an eligibility screener of about eight questions, collect a name and email from people who qualify, and let research assistants (RAs) log in to see the list of sign-ups.
+**Recommendation:** Django. It comes with login, an RA admin page, and security protections already built in, which fits this project best. A no-code option (React front end plus a university form) is the main alternative.
 
-The constraints that matter most: the grad student knows Python for data analysis but has never built a website, the site stores contact info so security and privacy matter, it should be running in about a month, and nobody will maintain it full time.
+Constraints considered:
 
-**Recommendation:** Django. It has login, an admin page, form validation, and security protections built in, which covers most of the requirements. This memo compares Django and Flask with a SWOT analysis for each, and also considers FastAPI and a no-code option.
+- The grad student knows Python for data analysis but has never built a website.
+- The site stores contact info, so security and privacy matter.
+- It should be running in about a month.
+- Nobody will maintain it full time.
 
 ## Key Analysis
 
@@ -45,88 +49,84 @@ The constraints that matter most: the grad student knows Python for data analysi
 
 **Strengths**
 
-- Login and admin are built in, so the RA sign-up list is basically Django's free admin page.
-- Security defaults are on: protection against CSRF, SQL injection, and XSS, and hashed passwords [@django_docs].
-- One standard way to do things, and built-in forms for the screener.
+- **Login and admin page are built in.** RAs get a ready-made page to see sign-ups, so almost nothing has to be built by hand.^[The admin page is an automatic back-office screen where logged-in staff can view and edit the stored data, like a spreadsheet inside the website.]
+- **Security is on by default.** The site stores names and emails of students, so a leak would be a real privacy problem, and Django blocks the common attacks without extra setup [@django_docs].^[Three common attacks Django blocks automatically. *CSRF*: another website tricks a logged-in RA's browser into submitting actions they never meant to, such as deleting sign-ups. *SQL injection*: someone types code into a form field (like the screener) to read or wipe the database. *XSS*: someone sneaks a malicious script into a form answer that then runs in an RA's browser. Django also stores passwords as scrambled "hashes" so a stolen database does not reveal them. This matters here because the screener collects health-related answers.]
+- **Fewer architecture choices.** Django decides how the project is organized, so a non-technical builder does not have to pick tools or layouts, though they will still need to learn some of Django's own structure.
 
 **Weaknesses**
 
-- Steeper learning curve for someone who has only done data analysis.
-- Heavy for a small site, with many files for about four pages.
+- **Steeper learning curve.** There are many new concepts to learn at once, which is hard for someone who has only done data analysis.
+- **Heavy for a small site.** A site with about four pages still comes with many files and folders.
+- **Hard to debug.** Django does a lot automatically, so when something breaks it is not obvious why.
 
 **Opportunities**
 
-- Easy to reuse for later studies; a new study could be a new model in the same project.
-- The admin page can filter sign-ups, so RAs may not need a custom dashboard.
+- **Easy to reuse for later studies.** A new study would only need a new "model" in the same project.^[A model is a description of one kind of record the site stores. For example, a "SignUp" model says each sign-up has a name, an email, and a date. Django turns it into a database table and an admin page automatically.]
+- **RAs can filter sign-ups in the admin page.** Filtering means showing only some rows, such as sign-ups from this week or people who qualified. Without it, RAs would scroll through the full list or someone would have to build a custom page.
+- **Python skills carry over.** Django reads and writes the database with Python code, which feels like working with a data table.^[This part of Django is called the ORM. It lets you write Python instead of database language, so the grad student does not need to learn a second language.]
 
 **Threats**
 
-- An unmaintained site can fall behind on security patches.
-- Campus IT may need to support a full Django deployment, which could delay the one-month goal.
-- If the grad student leaves, the next person has to learn Django too.
+- **Falls behind on updates.** Django releases security fixes regularly, and if nobody installs them the site slowly becomes easier to break into.
+- **Hosting may delay the timeline.** Campus IT has to support a full Django setup, which could push past the one-month goal.
+- **Hard to hand off.** If the grad student leaves, the next person has to learn Django from scratch.
 
 ### SWOT: Flask
 
 **Strengths**
 
-- Easy to start: a working page is about five lines of Python.
-- Small and readable, and the screener logic can be plain Python.
+- **Easy to start.** A working page takes about five lines of Python, so the grad student sees results on day one.
+- **Small and readable.** The whole site fits in a few files, which makes it easy for a beginner to understand and for a future person to pick up.
+- **Screener logic is plain Python.** The grad student can write the eligibility rules in a language they already know.^[Screener logic is the set of rules that decides who qualifies, such as "age 18 to 25 and sleeps fewer than 6 hours" means eligible. It is the core of this site.]
 
 **Weaknesses**
 
-- Security is your job. Flask has no built-in login or CSRF protection, so you add extensions like Flask-Login and Flask-WTF [@flask_docs].
-- Many small choices (which database library? which login extension?) and the RA sign-up list has to be built by hand.
+- **Security is your job.** Flask has no built-in login or CSRF protection, so extensions like Flask-Login and Flask-WTF must be added and set up correctly [@flask_docs]. For a site holding student contact info, that is a lot of responsibility for a beginner.
+- **Many small choices.** Which database tool? Which login add-on? Each choice is a decision a first-time builder is not equipped to make.
+- **RA sign-up list is built by hand.** There is no free admin page, so this part adds time to a one-month schedule.
 
 **Opportunities**
 
-- A quick prototype could be shown to the PI within the first week or two.
+- **Fast prototype.** The PI could see a working draft in the first week or two and give feedback early.
+- **Can grow gradually.** If the lab only ever needs small features, the site never becomes more complicated than it has to be.
+- **Free to use what IT supports.** Because Flask does not force a setup, it can be fitted to whatever hosting and database campus IT already offers.
 
 **Threats**
 
-- A missed or wrong add-on setup could leak contact info, which campus IT will care about.
-- Add-ons are maintained by different people and can go stale, and with no standard layout a future maintainer may not understand the site.
+- **One missed setup step can leak data.** A forgotten protection exposes participants' emails, which campus IT will care about.
+- **Add-ons can go stale.** They are maintained by different people, so one may stop getting updates while the site still relies on it.
+- **No standard layout.** A future maintainer may not understand how the site was put together.
 
-### Other Options
+### SWOT: No-Code Option
 
-**FastAPI.** I have used it before and it is easy to write [@fastapi_docs], but it is built for APIs, not pages with forms. It has no built-in login, sessions, or admin page, and it carries the same security risk as Flask. It would make sense if we later want a separate API.
+This option is a basic React front end that describes the study and links to a university-managed form system for the screener and sign-up, with login through Microsoft, which UW already uses. React is a free tool for building simple web pages [@react_docs], Microsoft Forms collects the responses [@ms_forms], and Microsoft sign-in controls which RAs can see them [@ms_entra].
 
-**No-code (form + simple page).** A university-approved form tool (Microsoft Forms, Qualtrics, or REDCap) could run the screener and sign-up, with a simple UW-hosted page describing the study. This is live in days and IT may have already approved where the data is stored, but the screener logic and design are limited. Commercial site builders like Webflow store data on a third-party server IT has not reviewed. This may be the fastest and safest option, so it is worth raising with IT.
+- **Strength:** live within days, and the participant data stays in a system IT has already approved.
+- **Weakness:** the screener rules and page design are limited to what the form tool allows.
+- **Opportunity:** the lab could start with this and move to Django later if the study outgrows it.
+- **Threat:** access to responses depends on who the form is shared with, so an RA who leaves could keep access by mistake.
 
 ### Summary Comparison
 
-| Question | Django | Flask | FastAPI |
+| Question | Django | Flask | No-code |
 |---|---|---|---|
 | Learning curve for a beginner | Steeper | Gentle | Gentle |
-| RA login + sign-up list | Mostly built in | Build it yourself | Build it yourself |
-| Security by default | Strong | Add-ons needed | Add-ons needed |
-| Fits a small one-time site | OK | Great | OK |
-| Easy to reuse and hand off | Great | Depends | Depends |
+| RA login + sign-up list | Mostly built in | Build it yourself | Microsoft login + form results |
+| Security by default | Strong | Add-ons needed | Handled by the university |
+| Custom screener logic | Yes | Yes | Limited |
+| Easy to reuse and hand off | Great | Depends | Easy, but less flexible |
 
 : Summary comparison for the sleep study site {#tbl-summary}
 
-A Django model for a sign-up is only a few lines, which shows why the admin page comes cheap.^[This is a sketch, not tested code. It would need to be registered in `admin.py` to show up in the admin page.]
+## Suggestions and Questions
 
-```python
-from django.db import models
+**Suggestion:** Have one person learn Django for a few weeks before building, using a Udemy course and the official [Django documentation](https://docs.djangoproject.com/en/stable/), with extra focus on security and on using the admin page for the RA view. If IT can only host something very simple, use the no-code option or Flask as the fallback.
 
-class SignUp(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    created = models.DateTimeField(auto_now_add=True)
-```
+**Questions for IT:**
 
-## Suggestions for Next Steps
-
-The biggest risks for this project are not build speed. They are security of contact information and handing it off to people who won't maintain it full time, and Django addresses both best. The learning curve is its real cost, so the grad student should start with the official [Django tutorial](https://docs.djangoproject.com/en/stable/intro/tutorial01/) and use the admin page for the RA view instead of building a custom one. If IT can only host something very simple, Flask is the fallback.
-
-Questions to confirm with IT:
-
-1. Would a university-approved form plus a simple page be acceptable instead of a custom site?
-2. Can the university host a Python app with a database, and where would it live?
-3. Does IT require a specific database (SQLite, PostgreSQL) or encryption at rest?
-4. Who will apply security updates after the study starts?
-5. Does the IRB need to approve storing screener answers (sleep and health info) for qualified participants?
-6. Can someone with web experience help in the first week?
+1. Can the university host a Python app with a database, and who would apply security updates after the study starts?
+2. Would a university-approved form plus a simple page be acceptable instead of a custom site?
+3. Does the IRB need to approve storing screener answers (sleep and health info)?
 
 ## References {.unnumbered}
 

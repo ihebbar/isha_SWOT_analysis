@@ -28,41 +28,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 /* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
@@ -155,10 +120,6 @@ div.csl-indent {
     <a class="nav-link active" href="./index.html" aria-current="page"> 
 <span class="menu-text">Home</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
-<span class="menu-text">About</span></a>
-  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -180,10 +141,10 @@ div.csl-indent {
   <ul class="collapse">
   <li><a href="#swot-django" id="toc-swot-django" class="nav-link" data-scroll-target="#swot-django"><span class="header-section-number">2.1</span> SWOT: Django</a></li>
   <li><a href="#swot-flask" id="toc-swot-flask" class="nav-link" data-scroll-target="#swot-flask"><span class="header-section-number">2.2</span> SWOT: Flask</a></li>
-  <li><a href="#other-options" id="toc-other-options" class="nav-link" data-scroll-target="#other-options"><span class="header-section-number">2.3</span> Other Options</a></li>
+  <li><a href="#swot-no-code-option" id="toc-swot-no-code-option" class="nav-link" data-scroll-target="#swot-no-code-option"><span class="header-section-number">2.3</span> SWOT: No-Code Option</a></li>
   <li><a href="#summary-comparison" id="toc-summary-comparison" class="nav-link" data-scroll-target="#summary-comparison"><span class="header-section-number">2.4</span> Summary Comparison</a></li>
   </ul></li>
-  <li><a href="#suggestions-for-next-steps" id="toc-suggestions-for-next-steps" class="nav-link" data-scroll-target="#suggestions-for-next-steps"><span class="header-section-number">3</span> Suggestions for Next Steps</a></li>
+  <li><a href="#suggestions-and-questions" id="toc-suggestions-and-questions" class="nav-link" data-scroll-target="#suggestions-and-questions"><span class="header-section-number">3</span> Suggestions and Questions</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="index.pdf"><i class="bi bi-file-pdf"></i>Download PDF</a></li><li><a href="index.docx"><i class="bi bi-file-word"></i>Download Word</a></li></ul></div></nav>
@@ -234,9 +195,14 @@ div.csl-indent {
 <h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
 <p>Researcher: Isha Hebbar<br>
 Question: Should the sleep study recruitment website be built with Django or Flask?</p>
-<p>Right now, interested students email the lab and a grad student manually sends back eligibility questions. That takes hours each week and people drop out along the way. The site needs to describe the study, run an eligibility screener of about eight questions, collect a name and email from people who qualify, and let research assistants (RAs) log in to see the list of sign-ups.</p>
-<p>The constraints that matter most: the grad student knows Python for data analysis but has never built a website, the site stores contact info so security and privacy matter, it should be running in about a month, and nobody will maintain it full time.</p>
-<p><strong>Recommendation:</strong> Django. It has login, an admin page, form validation, and security protections built in, which covers most of the requirements. This memo compares Django and Flask with a SWOT analysis for each, and also considers FastAPI and a no-code option.</p>
+<p><strong>Recommendation:</strong> Django. It comes with login, an RA admin page, and security protections already built in, which fits this project best. A no-code option (React front end plus a university form) is the main alternative.</p>
+<p>Constraints considered:</p>
+<ul>
+<li>The grad student knows Python for data analysis but has never built a website.</li>
+<li>The site stores contact info, so security and privacy matter.</li>
+<li>It should be running in about a month.</li>
+<li>Nobody will maintain it full time.</li>
+</ul>
 </section>
 <section id="key-analysis" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="key-analysis"><span class="header-section-number">2</span> Key Analysis</h2>
@@ -244,53 +210,65 @@ Question: Should the sleep study recruitment website be built with Django or Fla
 <h3 data-number="2.1" class="anchored" data-anchor-id="swot-django"><span class="header-section-number">2.1</span> SWOT: Django</h3>
 <p><strong>Strengths</strong></p>
 <ul>
-<li>Login and admin are built in, so the RA sign-up list is basically Django’s free admin page.</li>
-<li>Security defaults are on: protection against CSRF, SQL injection, and XSS, and hashed passwords <span class="citation" data-cites="django_docs">(<a href="#ref-django_docs" role="doc-biblioref">Django Software Foundation 2025</a>)</span>.</li>
-<li>One standard way to do things, and built-in forms for the screener.</li>
+<li><strong>Login and admin page are built in.</strong> RAs get a ready-made page to see sign-ups, so almost nothing has to be built by hand.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
+<li><strong>Security is on by default.</strong> The site stores names and emails of students, so a leak would be a real privacy problem, and Django blocks the common attacks without extra setup <span class="citation" data-cites="django_docs">(<a href="#ref-django_docs" role="doc-biblioref">Django Software Foundation 2025</a>)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></li>
+<li><strong>Fewer architecture choices.</strong> Django decides how the project is organized, so a non-technical builder does not have to pick tools or layouts, though they will still need to learn some of Django’s own structure.</li>
 </ul>
 <p><strong>Weaknesses</strong></p>
 <ul>
-<li>Steeper learning curve for someone who has only done data analysis.</li>
-<li>Heavy for a small site, with many files for about four pages.</li>
+<li><strong>Steeper learning curve.</strong> There are many new concepts to learn at once, which is hard for someone who has only done data analysis.</li>
+<li><strong>Heavy for a small site.</strong> A site with about four pages still comes with many files and folders.</li>
+<li><strong>Hard to debug.</strong> Django does a lot automatically, so when something breaks it is not obvious why.</li>
 </ul>
 <p><strong>Opportunities</strong></p>
 <ul>
-<li>Easy to reuse for later studies; a new study could be a new model in the same project.</li>
-<li>The admin page can filter sign-ups, so RAs may not need a custom dashboard.</li>
+<li><strong>Easy to reuse for later studies.</strong> A new study would only need a new “model” in the same project.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
+<li><strong>RAs can filter sign-ups in the admin page.</strong> Filtering means showing only some rows, such as sign-ups from this week or people who qualified. Without it, RAs would scroll through the full list or someone would have to build a custom page.</li>
+<li><strong>Python skills carry over.</strong> Django reads and writes the database with Python code, which feels like working with a data table.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
 </ul>
 <p><strong>Threats</strong></p>
 <ul>
-<li>An unmaintained site can fall behind on security patches.</li>
-<li>Campus IT may need to support a full Django deployment, which could delay the one-month goal.</li>
-<li>If the grad student leaves, the next person has to learn Django too.</li>
+<li><strong>Falls behind on updates.</strong> Django releases security fixes regularly, and if nobody installs them the site slowly becomes easier to break into.</li>
+<li><strong>Hosting may delay the timeline.</strong> Campus IT has to support a full Django setup, which could push past the one-month goal.</li>
+<li><strong>Hard to hand off.</strong> If the grad student leaves, the next person has to learn Django from scratch.</li>
 </ul>
 </section>
 <section id="swot-flask" class="level3" data-number="2.2">
 <h3 data-number="2.2" class="anchored" data-anchor-id="swot-flask"><span class="header-section-number">2.2</span> SWOT: Flask</h3>
 <p><strong>Strengths</strong></p>
 <ul>
-<li>Easy to start: a working page is about five lines of Python.</li>
-<li>Small and readable, and the screener logic can be plain Python.</li>
+<li><strong>Easy to start.</strong> A working page takes about five lines of Python, so the grad student sees results on day one.</li>
+<li><strong>Small and readable.</strong> The whole site fits in a few files, which makes it easy for a beginner to understand and for a future person to pick up.</li>
+<li><strong>Screener logic is plain Python.</strong> The grad student can write the eligibility rules in a language they already know.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></li>
 </ul>
 <p><strong>Weaknesses</strong></p>
 <ul>
-<li>Security is your job. Flask has no built-in login or CSRF protection, so you add extensions like Flask-Login and Flask-WTF <span class="citation" data-cites="flask_docs">(<a href="#ref-flask_docs" role="doc-biblioref">Pallets 2025</a>)</span>.</li>
-<li>Many small choices (which database library? which login extension?) and the RA sign-up list has to be built by hand.</li>
+<li><strong>Security is your job.</strong> Flask has no built-in login or CSRF protection, so extensions like Flask-Login and Flask-WTF must be added and set up correctly <span class="citation" data-cites="flask_docs">(<a href="#ref-flask_docs" role="doc-biblioref">Pallets 2025</a>)</span>. For a site holding student contact info, that is a lot of responsibility for a beginner.</li>
+<li><strong>Many small choices.</strong> Which database tool? Which login add-on? Each choice is a decision a first-time builder is not equipped to make.</li>
+<li><strong>RA sign-up list is built by hand.</strong> There is no free admin page, so this part adds time to a one-month schedule.</li>
 </ul>
 <p><strong>Opportunities</strong></p>
 <ul>
-<li>A quick prototype could be shown to the PI within the first week or two.</li>
+<li><strong>Fast prototype.</strong> The PI could see a working draft in the first week or two and give feedback early.</li>
+<li><strong>Can grow gradually.</strong> If the lab only ever needs small features, the site never becomes more complicated than it has to be.</li>
+<li><strong>Free to use what IT supports.</strong> Because Flask does not force a setup, it can be fitted to whatever hosting and database campus IT already offers.</li>
 </ul>
 <p><strong>Threats</strong></p>
 <ul>
-<li>A missed or wrong add-on setup could leak contact info, which campus IT will care about.</li>
-<li>Add-ons are maintained by different people and can go stale, and with no standard layout a future maintainer may not understand the site.</li>
+<li><strong>One missed setup step can leak data.</strong> A forgotten protection exposes participants’ emails, which campus IT will care about.</li>
+<li><strong>Add-ons can go stale.</strong> They are maintained by different people, so one may stop getting updates while the site still relies on it.</li>
+<li><strong>No standard layout.</strong> A future maintainer may not understand how the site was put together.</li>
 </ul>
 </section>
-<section id="other-options" class="level3" data-number="2.3">
-<h3 data-number="2.3" class="anchored" data-anchor-id="other-options"><span class="header-section-number">2.3</span> Other Options</h3>
-<p><strong>FastAPI.</strong> I have used it before and it is easy to write <span class="citation" data-cites="fastapi_docs">(<a href="#ref-fastapi_docs" role="doc-biblioref">Ramirez 2025</a>)</span>, but it is built for APIs, not pages with forms. It has no built-in login, sessions, or admin page, and it carries the same security risk as Flask. It would make sense if we later want a separate API.</p>
-<p><strong>No-code (form + simple page).</strong> A university-approved form tool (Microsoft Forms, Qualtrics, or REDCap) could run the screener and sign-up, with a simple UW-hosted page describing the study. This is live in days and IT may have already approved where the data is stored, but the screener logic and design are limited. Commercial site builders like Webflow store data on a third-party server IT has not reviewed. This may be the fastest and safest option, so it is worth raising with IT.</p>
+<section id="swot-no-code-option" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="swot-no-code-option"><span class="header-section-number">2.3</span> SWOT: No-Code Option</h3>
+<p>This option is a basic React front end that describes the study and links to a university-managed form system for the screener and sign-up, with login through Microsoft, which UW already uses. React is a free tool for building simple web pages <span class="citation" data-cites="react_docs">(<a href="#ref-react_docs" role="doc-biblioref">Meta Open Source 2025</a>)</span>, Microsoft Forms collects the responses <span class="citation" data-cites="ms_forms">(<a href="#ref-ms_forms" role="doc-biblioref">Microsoft 2025b</a>)</span>, and Microsoft sign-in controls which RAs can see them <span class="citation" data-cites="ms_entra">(<a href="#ref-ms_entra" role="doc-biblioref">Microsoft 2025a</a>)</span>.</p>
+<ul>
+<li><strong>Strength:</strong> live within days, and the participant data stays in a system IT has already approved.</li>
+<li><strong>Weakness:</strong> the screener rules and page design are limited to what the form tool allows.</li>
+<li><strong>Opportunity:</strong> the lab could start with this and move to Django later if the study outgrows it.</li>
+<li><strong>Threat:</strong> access to responses depends on who the form is shared with, so an RA who leaves could keep access by mistake.</li>
+</ul>
 </section>
 <section id="summary-comparison" class="level3" data-number="2.4">
 <h3 data-number="2.4" class="anchored" data-anchor-id="summary-comparison"><span class="header-section-number">2.4</span> Summary Comparison</h3>
@@ -312,7 +290,7 @@ Table&nbsp;1: Summary comparison for the sleep study site
 <th>Question</th>
 <th>Django</th>
 <th>Flask</th>
-<th>FastAPI</th>
+<th>No-code</th>
 </tr>
 </thead>
 <tbody>
@@ -326,51 +304,41 @@ Table&nbsp;1: Summary comparison for the sleep study site
 <td>RA login + sign-up list</td>
 <td>Mostly built in</td>
 <td>Build it yourself</td>
-<td>Build it yourself</td>
+<td>Microsoft login + form results</td>
 </tr>
 <tr class="odd">
 <td>Security by default</td>
 <td>Strong</td>
 <td>Add-ons needed</td>
-<td>Add-ons needed</td>
+<td>Handled by the university</td>
 </tr>
 <tr class="even">
-<td>Fits a small one-time site</td>
-<td>OK</td>
-<td>Great</td>
-<td>OK</td>
+<td>Custom screener logic</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Limited</td>
 </tr>
 <tr class="odd">
 <td>Easy to reuse and hand off</td>
 <td>Great</td>
 <td>Depends</td>
-<td>Depends</td>
+<td>Easy, but less flexible</td>
 </tr>
 </tbody>
 </table>
 </div>
 </figure>
 </div>
-<p>A Django model for a sign-up is only a few lines, which shows why the admin page comes cheap.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> django.db <span class="im">import</span> models</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SignUp(models.Model):</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> models.CharField(max_length<span class="op">=</span><span class="dv">100</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    email <span class="op">=</span> models.EmailField()</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    created <span class="op">=</span> models.DateTimeField(auto_now_add<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 </section>
-<section id="suggestions-for-next-steps" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="suggestions-for-next-steps"><span class="header-section-number">3</span> Suggestions for Next Steps</h2>
-<p>The biggest risks for this project are not build speed. They are security of contact information and handing it off to people who won’t maintain it full time, and Django addresses both best. The learning curve is its real cost, so the grad student should start with the official <a href="https://docs.djangoproject.com/en/stable/intro/tutorial01/">Django tutorial</a> and use the admin page for the RA view instead of building a custom one. If IT can only host something very simple, Flask is the fallback.</p>
-<p>Questions to confirm with IT:</p>
+<section id="suggestions-and-questions" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="suggestions-and-questions"><span class="header-section-number">3</span> Suggestions and Questions</h2>
+<p><strong>Suggestion:</strong> Have one person learn Django for a few weeks before building, using a Udemy course and the official <a href="https://docs.djangoproject.com/en/stable/">Django documentation</a>, with extra focus on security and on using the admin page for the RA view. If IT can only host something very simple, use the no-code option or Flask as the fallback.</p>
+<p><strong>Questions for IT:</strong></p>
 <ol type="1">
+<li>Can the university host a Python app with a database, and who would apply security updates after the study starts?</li>
 <li>Would a university-approved form plus a simple page be acceptable instead of a custom site?</li>
-<li>Can the university host a Python app with a database, and where would it live?</li>
-<li>Does IT require a specific database (SQLite, PostgreSQL) or encryption at rest?</li>
-<li>Who will apply security updates after the study starts?</li>
-<li>Does the IRB need to approve storing screener answers (sleep and health info) for qualified participants?</li>
-<li>Can someone with web experience help in the first week?</li>
+<li>Does the IRB need to approve storing screener answers (sleep and health info)?</li>
 </ol>
 </section>
 <section id="references" class="level2 unnumbered">
@@ -379,11 +347,17 @@ Table&nbsp;1: Summary comparison for the sleep study site
 <div id="ref-django_docs" class="csl-entry" role="listitem">
 Django Software Foundation. 2025. <em>Django Documentation: Security in Django</em>. <a href="https://docs.djangoproject.com/en/stable/topics/security/">https://docs.djangoproject.com/en/stable/topics/security/</a>.
 </div>
+<div id="ref-react_docs" class="csl-entry" role="listitem">
+Meta Open Source. 2025. <em>React: Learn React</em>. <a href="https://react.dev/learn">https://react.dev/learn</a>.
+</div>
+<div id="ref-ms_entra" class="csl-entry" role="listitem">
+Microsoft. 2025a. <em>Microsoft Entra ID Documentation</em>. <a href="https://learn.microsoft.com/en-us/entra/identity/">https://learn.microsoft.com/en-us/entra/identity/</a>.
+</div>
+<div id="ref-ms_forms" class="csl-entry" role="listitem">
+Microsoft. 2025b. <em>Microsoft Forms Help &amp; Learning</em>. <a href="https://support.microsoft.com/en-us/forms">https://support.microsoft.com/en-us/forms</a>.
+</div>
 <div id="ref-flask_docs" class="csl-entry" role="listitem">
 Pallets. 2025. <em>Flask Documentation: Security Considerations</em>. <a href="https://flask.palletsprojects.com/en/stable/web-security/">https://flask.palletsprojects.com/en/stable/web-security/</a>.
-</div>
-<div id="ref-fastapi_docs" class="csl-entry" role="listitem">
-Ramirez, Sebastian. 2025. <em>FastAPI Documentation</em>. <a href="https://fastapi.tiangolo.com/">https://fastapi.tiangolo.com/</a>.
 </div>
 </div>
 
@@ -394,7 +368,11 @@ Ramirez, Sebastian. 2025. <em>FastAPI Documentation</em>. <a href="https://fasta
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>This is a sketch, not tested code. It would need to be registered in <code>admin.py</code> to show up in the admin page.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>The admin page is an automatic back-office screen where logged-in staff can view and edit the stored data, like a spreadsheet inside the website.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Three common attacks Django blocks automatically. <em>CSRF</em>: another website tricks a logged-in RA’s browser into submitting actions they never meant to, such as deleting sign-ups. <em>SQL injection</em>: someone types code into a form field (like the screener) to read or wipe the database. <em>XSS</em>: someone sneaks a malicious script into a form answer that then runs in an RA’s browser. Django also stores passwords as scrambled “hashes” so a stolen database does not reveal them. This matters here because the screener collects health-related answers.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>A model is a description of one kind of record the site stores. For example, a “SignUp” model says each sign-up has a name, an email, and a date. Django turns it into a database table and an admin page automatically.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>This part of Django is called the ORM. It lets you write Python instead of database language, so the grad student does not need to learn a second language.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Screener logic is the set of rules that decides who qualifies, such as “age 18 to 25 and sleeps fewer than 6 hours” means eligible. It is the core of this site.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
