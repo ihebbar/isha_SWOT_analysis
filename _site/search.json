@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "RESEARCH MEMORANDUM",
+    "section": "",
+    "text": "Researcher: Isha Hebbar\nQuestion: Should the sleep study recruitment website be built with Django or Flask?\nRight now, interested students email the lab and a grad student manually sends back eligibility questions. That takes hours each week and people drop out along the way. The site needs to describe the study, run an eligibility screener of about eight questions, collect a name and email from people who qualify, and let research assistants (RAs) log in to see the list of sign-ups.\nThe constraints that matter most: the grad student knows Python for data analysis but has never built a website, the site stores contact info so security and privacy matter, it should be running in about a month, and nobody will maintain it full time.\nRecommendation: Django. It has login, an admin page, form validation, and security protections built in, which covers most of the requirements. This memo compares Django and Flask with a SWOT analysis for each, and also considers FastAPI and a no-code option."
+  },
+  {
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
+    "title": "RESEARCH MEMORANDUM",
+    "section": "",
+    "text": "Researcher: Isha Hebbar\nQuestion: Should the sleep study recruitment website be built with Django or Flask?\nRight now, interested students email the lab and a grad student manually sends back eligibility questions. That takes hours each week and people drop out along the way. The site needs to describe the study, run an eligibility screener of about eight questions, collect a name and email from people who qualify, and let research assistants (RAs) log in to see the list of sign-ups.\nThe constraints that matter most: the grad student knows Python for data analysis but has never built a website, the site stores contact info so security and privacy matter, it should be running in about a month, and nobody will maintain it full time.\nRecommendation: Django. It has login, an admin page, form validation, and security protections built in, which covers most of the requirements. This memo compares Django and Flask with a SWOT analysis for each, and also considers FastAPI and a no-code option."
+  },
+  {
+    "objectID": "index.html#key-analysis",
+    "href": "index.html#key-analysis",
+    "title": "RESEARCH MEMORANDUM",
+    "section": "2 Key Analysis",
+    "text": "2 Key Analysis\n\n2.1 SWOT: Django\nStrengths\n\nLogin and admin are built in, so the RA sign-up list is basically Django’s free admin page.\nSecurity defaults are on: protection against CSRF, SQL injection, and XSS, and hashed passwords (Django Software Foundation 2025).\nOne standard way to do things, and built-in forms for the screener.\n\nWeaknesses\n\nSteeper learning curve for someone who has only done data analysis.\nHeavy for a small site, with many files for about four pages.\n\nOpportunities\n\nEasy to reuse for later studies; a new study could be a new model in the same project.\nThe admin page can filter sign-ups, so RAs may not need a custom dashboard.\n\nThreats\n\nAn unmaintained site can fall behind on security patches.\nCampus IT may need to support a full Django deployment, which could delay the one-month goal.\nIf the grad student leaves, the next person has to learn Django too.\n\n\n\n2.2 SWOT: Flask\nStrengths\n\nEasy to start: a working page is about five lines of Python.\nSmall and readable, and the screener logic can be plain Python.\n\nWeaknesses\n\nSecurity is your job. Flask has no built-in login or CSRF protection, so you add extensions like Flask-Login and Flask-WTF (Pallets 2025).\nMany small choices (which database library? which login extension?) and the RA sign-up list has to be built by hand.\n\nOpportunities\n\nA quick prototype could be shown to the PI within the first week or two.\n\nThreats\n\nA missed or wrong add-on setup could leak contact info, which campus IT will care about.\nAdd-ons are maintained by different people and can go stale, and with no standard layout a future maintainer may not understand the site.\n\n\n\n2.3 Other Options\nFastAPI. I have used it before and it is easy to write (Ramirez 2025), but it is built for APIs, not pages with forms. It has no built-in login, sessions, or admin page, and it carries the same security risk as Flask. It would make sense if we later want a separate API.\nNo-code (form + simple page). A university-approved form tool (Microsoft Forms, Qualtrics, or REDCap) could run the screener and sign-up, with a simple UW-hosted page describing the study. This is live in days and IT may have already approved where the data is stored, but the screener logic and design are limited. Commercial site builders like Webflow store data on a third-party server IT has not reviewed. This may be the fastest and safest option, so it is worth raising with IT.\n\n\n2.4 Summary Comparison\n\n\n\nTable 1: Summary comparison for the sleep study site\n\n\n\n\n\n\n\n\n\n\n\nQuestion\nDjango\nFlask\nFastAPI\n\n\n\n\nLearning curve for a beginner\nSteeper\nGentle\nGentle\n\n\nRA login + sign-up list\nMostly built in\nBuild it yourself\nBuild it yourself\n\n\nSecurity by default\nStrong\nAdd-ons needed\nAdd-ons needed\n\n\nFits a small one-time site\nOK\nGreat\nOK\n\n\nEasy to reuse and hand off\nGreat\nDepends\nDepends\n\n\n\n\n\n\nA Django model for a sign-up is only a few lines, which shows why the admin page comes cheap.1\nfrom django.db import models\n\nclass SignUp(models.Model):\n    name = models.CharField(max_length=100)\n    email = models.EmailField()\n    created = models.DateTimeField(auto_now_add=True)"
+  },
+  {
+    "objectID": "index.html#suggestions-for-next-steps",
+    "href": "index.html#suggestions-for-next-steps",
+    "title": "RESEARCH MEMORANDUM",
+    "section": "3 Suggestions for Next Steps",
+    "text": "3 Suggestions for Next Steps\nThe biggest risks for this project are not build speed. They are security of contact information and handing it off to people who won’t maintain it full time, and Django addresses both best. The learning curve is its real cost, so the grad student should start with the official Django tutorial and use the admin page for the RA view instead of building a custom one. If IT can only host something very simple, Flask is the fallback.\nQuestions to confirm with IT:\n\nWould a university-approved form plus a simple page be acceptable instead of a custom site?\nCan the university host a Python app with a database, and where would it live?\nDoes IT require a specific database (SQLite, PostgreSQL) or encryption at rest?\nWho will apply security updates after the study starts?\nDoes the IRB need to approve storing screener answers (sleep and health info) for qualified participants?\nCan someone with web experience help in the first week?"
+  },
+  {
+    "objectID": "index.html#references",
+    "href": "index.html#references",
+    "title": "RESEARCH MEMORANDUM",
+    "section": "References",
+    "text": "References\n\n\nDjango Software Foundation. 2025. Django Documentation: Security in Django. https://docs.djangoproject.com/en/stable/topics/security/.\n\n\nPallets. 2025. Flask Documentation: Security Considerations. https://flask.palletsprojects.com/en/stable/web-security/.\n\n\nRamirez, Sebastian. 2025. FastAPI Documentation. https://fastapi.tiangolo.com/."
+  },
+  {
+    "objectID": "index.html#footnotes",
+    "href": "index.html#footnotes",
+    "title": "RESEARCH MEMORANDUM",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nThis is a sketch, not tested code. It would need to be registered in admin.py to show up in the admin page.↩︎"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  }
+]

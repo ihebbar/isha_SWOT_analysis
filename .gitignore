@@ -1,7 +1,2 @@
-_site/
-.quarto/
-*_files/
-*.log
-
 /.quarto/
 **/*.quarto_ipynb
